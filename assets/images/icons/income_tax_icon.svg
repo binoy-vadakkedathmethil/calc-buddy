@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+
+<path d="M31 18h52l16 16v76H31z" fill="#FFF0E8"/>
+<path d="M83 18v20h20" fill="#FFD1BD"/>
+<rect x="45" y="49" width="38" height="11" rx="5" fill="#FF7A2F"/>
+<rect x="45" y="68" width="28" height="8" rx="4" fill="#FF7A2F" opacity=".75"/>
+<rect x="45" y="84" width="35" height="8" rx="4" fill="#FF7A2F" opacity=".55"/>
+<text x="64" y="40" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#FF7A2F">TAX</text>
+
+</svg>
