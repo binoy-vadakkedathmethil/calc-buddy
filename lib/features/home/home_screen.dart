@@ -12,6 +12,10 @@ import 'package:calc_buddy/features/bmi_calculator/screens/bmi_calculator_screen
 import 'package:calc_buddy/features/gold_loan/screens/gold_loan_calculator_screen.dart';
 import 'package:calc_buddy/features/home_loan/screens/home_loan_screen.dart';
 import 'package:calc_buddy/features/car_loan/screens/car_loan_screen.dart';
+import 'package:calc_buddy/features/emi/screens/emi_screen.dart';
+import 'package:calc_buddy/features/sip/screens/sip_screen.dart';
+import 'package:calc_buddy/features/fd/screens/fd_screen.dart';
+import 'package:calc_buddy/features/income_tax/screens/income_tax_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -81,6 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
       'gold_loan' => const GoldLoanCalculatorScreen(),
       'home_loan' => const HomeLoanScreen(),
       'car_loan' => const CarLoanScreen(),
+      'emi' => const EmiScreen(),
+      'sip' => const SipScreen(),
+      'fd' => const FdScreen(),
+      'income_tax' => const IncomeTaxScreen(),
       _ => null,
     };
 
