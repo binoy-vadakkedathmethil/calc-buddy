@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+
+<g transform="rotate(-8 64 64)">
+<rect x="27" y="13" width="74" height="102" rx="15" fill="#17345C"/>
+<rect x="37" y="25" width="54" height="23" rx="6" fill="#DCEBFA"/>
+<text x="64" y="42" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#17345C">123</text>
+<g fill="#FD746C">
+<rect x="38" y="57" width="14" height="14" rx="4"/><rect x="58" y="57" width="14" height="14" rx="4"/><rect x="78" y="57" width="14" height="14" rx="4"/>
+<rect x="38" y="77" width="14" height="14" rx="4"/><rect x="58" y="77" width="14" height="14" rx="4"/>
+<rect x="38" y="97" width="14" height="14" rx="4"/><rect x="58" y="97" width="14" height="14" rx="4"/>
+</g>
+<rect x="78" y="77" width="14" height="34" rx="5" fill="#FD746C"/>
+</g>
+<path d="M17 51 9 43M21 37l-3-11M107 48l10-7" stroke="#FD746C" stroke-width="5" stroke-linecap="round"/>
+
+</svg>
