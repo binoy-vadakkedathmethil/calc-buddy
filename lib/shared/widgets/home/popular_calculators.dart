@@ -190,7 +190,7 @@ class _PopularCalculatorCard extends StatelessWidget {
       case 'fd':
         return const Color(0xFFE4FAFA);
 
-      case 'income_tax':
+      case 'interest':
         return const Color(0xFFFFF0E6);
 
       default:

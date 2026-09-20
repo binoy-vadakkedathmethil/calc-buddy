@@ -43,13 +43,13 @@ const calculatorCategories = [
     iconColor: Color(0xFF8E4DE8),
   ),
 
-  CalculatorCategory(
-    title: 'Tax & Income',
-    description: 'Income tax and tax planning tools',
-    icon: 'assets/images/icons/home/income_tax_icon.svg',
-    backgroundColor: Color(0xFFFFF0EA),
-    iconColor: Color(0xFFFF7043),
-  ),
+  // CalculatorCategory(
+  //   title: 'Tax & Income',
+  //   description: 'Income tax and tax planning tools',
+  //   icon: 'assets/images/icons/home/income_tax_icon.svg',
+  //   backgroundColor: Color(0xFFFFF0EA),
+  //   iconColor: Color(0xFFFF7043),
+  // ),
 
   CalculatorCategory(
     title: 'Miscellaneous',

@@ -15,7 +15,7 @@ import 'package:calc_buddy/features/car_loan/screens/car_loan_screen.dart';
 import 'package:calc_buddy/features/emi/screens/emi_screen.dart';
 import 'package:calc_buddy/features/sip/screens/sip_screen.dart';
 import 'package:calc_buddy/features/fd/screens/fd_screen.dart';
-import 'package:calc_buddy/features/income_tax/screens/income_tax_screen.dart';
+import 'package:calc_buddy/features/interest/screens/interest_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -71,10 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: 'assets/images/icons/home/fd_icon.svg',
     ),
     CalculatorItem(
-      id: 'income_tax',
-      title: 'Income Tax',
-      subtitle: 'Calculator',
-      icon: 'assets/images/icons/home/income_tax_icon.svg',
+      id: 'interest',
+      title: 'Interest',
+      subtitle: 'Simple / Compound',
+      icon: 'assets/images/icons/home/misc_icon.svg',
     ),
   ];
   int selectedIndex = 0;
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'emi' => const EmiScreen(),
       'sip' => const SipScreen(),
       'fd' => const FdScreen(),
-      'income_tax' => const IncomeTaxScreen(),
+      'interest' => const InterestScreen(),
       _ => null,
     };
 

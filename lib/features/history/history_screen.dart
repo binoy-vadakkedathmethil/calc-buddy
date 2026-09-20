@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../shared/widgets/common/app_header.dart';
+
 import '../../shared/widgets/common/app_bottom_navigation.dart';
-import './data/history_data.dart';
-import '../../models/calculation_history.dart';
+import '../../shared/widgets/common/app_header.dart';
+
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
@@ -61,11 +61,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
       'color': const Color(0xFFFF6B6B),
     },
     {
-      'title': 'Income Tax Calculator',
-      'details': '₹12,00,000 | Old Regime',
-      'result': '₹1,08,000',
+      'title': 'Interest Calculator',
+      'details': '₹1,00,000 | 5 yrs | 8%',
+      'result': '₹48,989',
       'date': '10 Sep 2026, 09:15 AM',
-      'icon': Icons.receipt_long,
+      'icon': Icons.percent,
       'color': const Color(0xFFFF7043),
     },
   ];
@@ -74,50 +74,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FC),
-
-      // ---------------------------------------------------------
-      // EXISTING APP HEADER
-      // ---------------------------------------------------------
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(70),
-        child: AppHeader(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const AppHeader(),
+            _buildHistoryHeader(),
+            Expanded(child: _buildHistoryList()),
+          ],
+        ),
       ),
-
-      // ---------------------------------------------------------
-      // HISTORY CONTENT
-      // ---------------------------------------------------------
-      body: Column(
-        children: [
-          _buildHistoryHeader(),
-
-          Expanded(
-            child: _buildHistoryList(),
-          ),
-        ],
-      ),
-
-      // ---------------------------------------------------------
-      // EXISTING FIXED BOTTOM NAVIGATION
-      // ---------------------------------------------------------
-      bottomNavigationBar: AppBottomNavigation(
-        selectedIndex: 2,
-      
-      ),
+      bottomNavigationBar: const AppBottomNavigation(selectedIndex: 2),
     );
   }
 
-  // =============================================================
-  // HISTORY HEADER
-  // =============================================================
-
   Widget _buildHistoryHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        16,
-        8,
-        16,
-        12,
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       child: Row(
         children: [
           const Expanded(
@@ -130,17 +102,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             ),
           ),
-
-          // Clear All
           GestureDetector(
             onTap: _clearAll,
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.delete_outline,
-                  size: 18,
-                  color: Color(0xFFFF5252),
-                ),
+            child: const Row(
+              children: [
+                Icon(Icons.delete_outline, size: 18, color: Color(0xFFFF5252)),
                 SizedBox(width: 4),
                 Text(
                   'Clear All',
@@ -158,280 +124,78 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  // =============================================================
-  // HISTORY LIST
-  // =============================================================
-
   Widget _buildHistoryList() {
-    if (history.isEmpty) {
-      return _buildEmptyState();
-    }
+    if (history.isEmpty) return _buildEmptyState();
 
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(
-        12,
-        0,
-        12,
-        20,
-      ),
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
       itemCount: history.length,
-      itemBuilder: (context, index) {
-        return _buildHistoryCard(
-          history[index],
-          index,
-        );
-      },
+      itemBuilder: (context, index) => _buildHistoryCard(history[index]),
     );
   }
 
-  // =============================================================
-  // HISTORY CARD
-  // =============================================================
-
-  Widget _buildHistoryCard(
-    Map<String, dynamic> item,
-    int index,
-  ) {
-    final Color iconColor = item['color'];
+  Widget _buildHistoryCard(Map<String, dynamic> item) {
+    final color = item['color'] as Color;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 9,
-      ),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.035),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
-          // -------------------------------------------------------
-          // ICON
-          // -------------------------------------------------------
-
           Container(
-            width: 38,
-            height: 38,
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.12),
-              shape: BoxShape.circle,
+              color: color.withValues(alpha: .1),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              item['icon'],
-              size: 20,
-              color: iconColor,
-            ),
+            child: Icon(item['icon'] as IconData, color: color),
           ),
-
-          const SizedBox(width: 10),
-
-          // -------------------------------------------------------
-          // TITLE + DETAILS
-          // -------------------------------------------------------
-
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['title'],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF17345C),
-                  ),
+                  item['title'] as String,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
-
                 const SizedBox(height: 4),
-
                 Text(
-                  item['details'],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    color: Color(0xFF718096),
-                  ),
+                  item['details'] as String,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  item['date'] as String,
+                  style: const TextStyle(fontSize: 10, color: Colors.grey),
                 ),
               ],
             ),
           ),
-
-          const SizedBox(width: 6),
-
-          // -------------------------------------------------------
-          // RESULT + DATE
-          // -------------------------------------------------------
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                item['result'],
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF17345C),
-                ),
-              ),
-
-              const SizedBox(height: 3),
-
-              Text(
-                item['date'],
-                style: const TextStyle(
-                  fontSize: 8,
-                  color: Color(0xFF718096),
-                ),
-              ),
-            ],
-          ),
-
-          // -------------------------------------------------------
-          // MORE MENU
-          // -------------------------------------------------------
-
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            iconSize: 18,
-            icon: const Icon(
-              Icons.more_vert,
-              color: Color(0xFF718096),
-            ),
-            onSelected: (value) {
-              if (value == 'delete') {
-                setState(() {
-                  history.removeAt(index);
-                });
-              }
-            },
-            itemBuilder: (context) {
-              return const [
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.delete_outline,
-                        size: 18,
-                        color: Colors.red,
-                      ),
-                      SizedBox(width: 8),
-                      Text('Delete'),
-                    ],
-                  ),
-                ),
-              ];
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =============================================================
-  // EMPTY STATE
-  // =============================================================
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.history,
-            size: 55,
-            color: Colors.grey.shade300,
-          ),
-
-          const SizedBox(height: 12),
-
-          const Text(
-            'No calculation history',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+          Text(
+            item['result'] as String,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
               color: Color(0xFF17345C),
             ),
           ),
-
-          const SizedBox(height: 5),
-
-          Text(
-            'Your recent calculations will appear here.',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade500,
-            ),
-          ),
         ],
       ),
     );
   }
 
-  // =============================================================
-  // BOTTOM NAVIGATION
-  // =============================================================
-
-  void _onNavigationChanged(int index) {
-    // AppBottomNavigation already handles navigation
-    // in your existing implementation.
+  Widget _buildEmptyState() {
+    return const Center(
+      child: Text('No calculations yet', style: TextStyle(color: Colors.grey)),
+    );
   }
 
-  // =============================================================
-  // CLEAR ALL
-  // =============================================================
-
   void _clearAll() {
-    if (history.isEmpty) {
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Clear History?',
-          ),
-          content: const Text(
-            'Are you sure you want to clear all calculation history?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  history.clear();
-                });
-
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Clear All',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+    setState(history.clear);
   }
 }

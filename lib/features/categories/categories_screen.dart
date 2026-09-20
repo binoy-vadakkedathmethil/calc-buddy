@@ -4,9 +4,6 @@ import '../../shared/widgets/common/app_header.dart';
 import '../../shared/widgets/common/app_bottom_navigation.dart';
 import './data/calculator_categories.dart';
 import '../../shared/widgets/categories/category_card.dart';
-import '../home/home_screen.dart';
-
-
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -17,36 +14,6 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   int selectedIndex = 1;
-
-  void _onNavigationItemSelected(int index) {
-    if (index == selectedIndex) {
-      return;
-    }
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
-        );
-        break;
-
-      case 1:
-        // Already on Categories
-        break;
-
-      case 2:
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const HistoryScreen(),
-        //   ),
-        // );
-        break;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +45,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     SizedBox(height: 3),
                     Text(
                       'Explore calculators by category',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Color(0xFF65748B),
-                      ),
+                      style: TextStyle(fontSize: 11, color: Color(0xFF65748B)),
                     ),
                   ],
                 ),
@@ -99,9 +63,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   return CategoryCard(
                     category: category,
                     onTap: () {
-                      debugPrint(
-                        'Selected: ${category.title}',
-                      );
+                      debugPrint('Selected: ${category.title}');
                     },
                   );
                 },
@@ -112,9 +74,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
 
       // Bottom Navigation
-      bottomNavigationBar: AppBottomNavigation(
-        selectedIndex: selectedIndex,
-      ),
+      bottomNavigationBar: AppBottomNavigation(selectedIndex: selectedIndex),
     );
   }
 }
