@@ -12,7 +12,7 @@ class CalcBuddyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'CalcBuddy',
       theme: AppTheme.lightTheme,
-      home: const HomeScreen(),
+      // home: const HomeScreen(),
     );
   }
 }

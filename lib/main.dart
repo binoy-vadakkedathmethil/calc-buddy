@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'features/splash/presentation/splash_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/home/home_screen.dart';
+
+
 
 void main() {
   runApp(const CalcBuddyApp());
@@ -18,6 +21,7 @@ class CalcBuddyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }

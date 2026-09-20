@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   // 🎨 Brand Colors
   static const Color primaryColor = Color(0xFFFD746C);
@@ -20,6 +20,7 @@ class AppTheme {
     useMaterial3: true,
 
     brightness: Brightness.light,
+    
 
     // Primary Colors
     colorScheme: ColorScheme.fromSeed(
@@ -47,7 +48,10 @@ class AppTheme {
     ),
 
     // Text Theme
-    textTheme: const TextTheme(
+ textTheme: GoogleFonts.poppinsTextTheme(
+    
+    const TextTheme(
+
       displayLarge: TextStyle(
         color: primaryDark,
         fontSize: 32,
@@ -90,6 +94,7 @@ class AppTheme {
         color: textSecondary,
         fontSize: 12,
       ),
+    ),
     ),
 
     // Cards

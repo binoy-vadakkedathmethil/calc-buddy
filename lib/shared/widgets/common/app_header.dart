@@ -21,14 +21,14 @@ class AppHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: SvgPicture.asset(
-              'assets/images/logo/calc_buddy_header.svg',
-              height: 58,
+            child: Image.asset(
+              'assets/images/logo/calc_buddy_header.png',
+              height: 80,
               alignment: Alignment.centerLeft,
             ),
           ),
 
-          _buildSettingsButton(),
+          // _buildSettingsButton(),
         ],
       ),
     );
