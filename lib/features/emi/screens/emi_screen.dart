@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../services/history_service.dart';
 import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/emi_calculator.dart';
 
@@ -17,13 +18,26 @@ class _EmiScreenState extends State<EmiScreen> {
     _calculate();
   }
 
-  void _calculate() => setState(
-    () => emi = EmiCalculator.calculateEmi(
-      principal: principal,
-      annualInterestRate: rate,
-      tenureYears: years.round(),
-    ),
-  );
+  void _calculate({bool save = false}) {
+    setState(() {
+      emi = EmiCalculator.calculateEmi(
+        principal: principal,
+        annualInterestRate: rate,
+        tenureYears: years.round(),
+      );
+    });
+    if (save) {
+      HistoryService.add(
+        title: 'EMI Calculator',
+        details:
+            '${_money(principal)} | ${years.round()} yrs | ${rate.toStringAsFixed(1)}%',
+        result: _money(emi),
+        icon: 'percent',
+        color: 0xFF8B5CF6,
+      );
+    }
+  }
+
   String _money(double value) => '₹${value.round()}';
 
   @override
@@ -193,7 +207,7 @@ class _EmiScreenState extends State<EmiScreen> {
   Widget _button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: _calculate,
+      onPressed: () => _calculate(save: true),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFFD746C),
         foregroundColor: Colors.white,

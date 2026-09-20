@@ -4,28 +4,24 @@ import 'package:flutter/material.dart';
 
 import '../../../models/gold_rate.dart';
 import '../../../services/gold_rate_service.dart';
+import '../../../services/history_service.dart';
 import '../widgets/gold_rate_card.dart';
 import '../widgets/gold_loan_result_card.dart';
 
 class GoldLoanCalculatorScreen extends StatefulWidget {
-  const GoldLoanCalculatorScreen({
-    super.key,
-  });
+  const GoldLoanCalculatorScreen({super.key});
 
   @override
   State<GoldLoanCalculatorScreen> createState() =>
       _GoldLoanCalculatorScreenState();
 }
 
-class _GoldLoanCalculatorScreenState
-    extends State<GoldLoanCalculatorScreen> {
+class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
   final _weightController = TextEditingController();
 
-  final _interestController =
-      TextEditingController(text: '10.5');
+  final _interestController = TextEditingController(text: '10.5');
 
-  final GoldRateService _goldRateService =
-      GoldRateService();
+  final GoldRateService _goldRateService = GoldRateService();
 
   GoldRate? _goldRate;
 
@@ -67,8 +63,7 @@ class _GoldLoanCalculatorScreenState
     });
 
     try {
-      final rate =
-          await _goldRateService.getGoldRate();
+      final rate = await _goldRateService.getGoldRate();
 
       if (!mounted) return;
 
@@ -79,11 +74,7 @@ class _GoldLoanCalculatorScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Unable to load current gold rate',
-          ),
-        ),
+        const SnackBar(content: Text('Unable to load current gold rate')),
       );
     } finally {
       if (!mounted) return;
@@ -125,28 +116,16 @@ class _GoldLoanCalculatorScreenState
   // CALCULATE
   // --------------------------------------------------
 
-  void _calculateLoan() {
+  void _calculateLoan({bool save = false}) {
     FocusScope.of(context).unfocus();
 
-    final weight =
-        double.tryParse(
-          _weightController.text.trim(),
-        ) ??
-        0;
+    final weight = double.tryParse(_weightController.text.trim()) ?? 0;
 
-    final interest =
-        double.tryParse(
-          _interestController.text.trim(),
-        ) ??
-        0;
+    final interest = double.tryParse(_interestController.text.trim()) ?? 0;
 
     if (weight <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please enter a valid gold weight',
-          ),
-        ),
+        const SnackBar(content: Text('Please enter a valid gold weight')),
       );
 
       return;
@@ -154,11 +133,7 @@ class _GoldLoanCalculatorScreenState
 
     if (_goldRate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Gold rate is not available',
-          ),
-        ),
+        const SnackBar(content: Text('Gold rate is not available')),
       );
 
       return;
@@ -166,38 +141,25 @@ class _GoldLoanCalculatorScreenState
 
     final goldRate = _getGoldRate();
 
-    final goldValue =
-        weight * goldRate;
+    final goldValue = weight * goldRate;
 
-    final loanAmount =
-        goldValue * (_ltv / 100);
+    final loanAmount = goldValue * (_ltv / 100);
 
-    final monthlyRate =
-        interest / 12 / 100;
+    final monthlyRate = interest / 12 / 100;
 
     double emi;
 
     if (monthlyRate == 0) {
       emi = loanAmount / _tenure;
     } else {
-      final factor =
-          pow(
-            1 + monthlyRate,
-            _tenure,
-          );
+      final factor = pow(1 + monthlyRate, _tenure);
 
-      emi =
-          loanAmount *
-          monthlyRate *
-          factor /
-          (factor - 1);
+      emi = loanAmount * monthlyRate * factor / (factor - 1);
     }
 
-    final totalPayment =
-        emi * _tenure;
+    final totalPayment = emi * _tenure;
 
-    final totalInterest =
-        totalPayment - loanAmount;
+    final totalInterest = totalPayment - loanAmount;
 
     setState(() {
       _goldValue = goldValue;
@@ -205,6 +167,17 @@ class _GoldLoanCalculatorScreenState
       _interestAmount = totalInterest;
       _emi = emi;
     });
+
+    if (save) {
+      HistoryService.add(
+        title: 'Gold Loan Calculator',
+        details:
+            '${weight.toStringAsFixed(1)} g | $_tenure months | ${interest.toStringAsFixed(1)}%',
+        result: '₹${emi.round()}',
+        icon: 'diamond',
+        color: 0xFFF5A623,
+      );
+    }
   }
 
   // --------------------------------------------------
@@ -214,18 +187,13 @@ class _GoldLoanCalculatorScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Gold Loan Calculator',
-        ),
-      ),
+      appBar: AppBar(title: const Text('Gold Loan Calculator')),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
 
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
             // GOLD RATE CARD
@@ -249,7 +217,7 @@ class _GoldLoanCalculatorScreenState
               height: 52,
 
               child: ElevatedButton(
-                onPressed: _calculateLoan,
+                onPressed: () => _calculateLoan(save: true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFD746C),
                   foregroundColor: Colors.white,
@@ -260,10 +228,7 @@ class _GoldLoanCalculatorScreenState
 
                 child: const Text(
                   'Calculate Loan',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -289,187 +254,131 @@ class _GoldLoanCalculatorScreenState
       ),
     );
   }
+
   Widget _buildInputs() {
-  return Column(
-    crossAxisAlignment:
-        CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Gold Weight',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Gold Weight',
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
-      ),
 
-      const SizedBox(height: 8),
+        const SizedBox(height: 8),
 
-      TextField(
-        controller: _weightController,
-        keyboardType:
-            const TextInputType.numberWithOptions(
-          decimal: true,
-        ),
-        decoration: InputDecoration(
-          hintText: 'Enter gold weight',
-          suffixText: 'grams',
-          border: OutlineInputBorder(
-            borderRadius:
-                BorderRadius.circular(12),
-          ),
-        ),
-      ),
-
-      const SizedBox(height: 18),
-
-      const Text(
-        'Gold Purity',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-
-      const SizedBox(height: 8),
-
-      DropdownButtonFormField<String>(
-        value: _purity,
-
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius:
-                BorderRadius.circular(12),
+        TextField(
+          controller: _weightController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            hintText: 'Enter gold weight',
+            suffixText: 'grams',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
 
-        items: const [
-          DropdownMenuItem(
-            value: '24K',
-            child: Text('24K Gold'),
-          ),
-          DropdownMenuItem(
-            value: '22K',
-            child: Text('22K Gold'),
-          ),
-          DropdownMenuItem(
-            value: '21K',
-            child: Text('21K Gold'),
-          ),
-          DropdownMenuItem(
-            value: '18K',
-            child: Text('18K Gold'),
-          ),
-        ],
+        const SizedBox(height: 18),
 
-        onChanged: (value) {
-          if (value == null) return;
-
-          setState(() {
-            _purity = value;
-          });
-        },
-      ),
-
-      const SizedBox(height: 18),
-
-      Text(
-        'Loan-to-Value: ${_ltv.toStringAsFixed(0)}%',
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
+        const Text(
+          'Gold Purity',
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
-      ),
 
-      Slider(
-        value: _ltv,
-        min: 50,
-        max: 90,
-        divisions: 8,
-        label:
-            '${_ltv.toStringAsFixed(0)}%',
-        onChanged: (value) {
-          setState(() {
-            _ltv = value;
-          });
-        },
-      ),
+        const SizedBox(height: 8),
 
-      const SizedBox(height: 8),
+        DropdownButtonFormField<String>(
+          value: _purity,
 
-      const Text(
-        'Interest Rate',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-
-      const SizedBox(height: 8),
-
-      TextField(
-        controller: _interestController,
-        keyboardType:
-            const TextInputType.numberWithOptions(
-          decimal: true,
-        ),
-        decoration: InputDecoration(
-          suffixText: '% p.a.',
-          border: OutlineInputBorder(
-            borderRadius:
-                BorderRadius.circular(12),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
+
+          items: const [
+            DropdownMenuItem(value: '24K', child: Text('24K Gold')),
+            DropdownMenuItem(value: '22K', child: Text('22K Gold')),
+            DropdownMenuItem(value: '21K', child: Text('21K Gold')),
+            DropdownMenuItem(value: '18K', child: Text('18K Gold')),
+          ],
+
+          onChanged: (value) {
+            if (value == null) return;
+
+            setState(() {
+              _purity = value;
+            });
+          },
         ),
-      ),
 
-      const SizedBox(height: 18),
+        const SizedBox(height: 18),
 
-      const Text(
-        'Loan Tenure',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
+        Text(
+          'Loan-to-Value: ${_ltv.toStringAsFixed(0)}%',
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
-      ),
 
-      const SizedBox(height: 8),
+        Slider(
+          value: _ltv,
+          min: 50,
+          max: 90,
+          divisions: 8,
+          label: '${_ltv.toStringAsFixed(0)}%',
+          onChanged: (value) {
+            setState(() {
+              _ltv = value;
+            });
+          },
+        ),
 
-      DropdownButtonFormField<int>(
-        value: _tenure,
+        const SizedBox(height: 8),
 
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius:
-                BorderRadius.circular(12),
+        const Text(
+          'Interest Rate',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+
+        const SizedBox(height: 8),
+
+        TextField(
+          controller: _interestController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            suffixText: '% p.a.',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
 
-        items: const [
-          DropdownMenuItem(
-            value: 6,
-            child: Text('6 Months'),
-          ),
-          DropdownMenuItem(
-            value: 12,
-            child: Text('12 Months'),
-          ),
-          DropdownMenuItem(
-            value: 18,
-            child: Text('18 Months'),
-          ),
-          DropdownMenuItem(
-            value: 24,
-            child: Text('24 Months'),
-          ),
-          DropdownMenuItem(
-            value: 36,
-            child: Text('36 Months'),
-          ),
-        ],
+        const SizedBox(height: 18),
 
-        onChanged: (value) {
-          if (value == null) return;
+        const Text(
+          'Loan Tenure',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
 
-          setState(() {
-            _tenure = value;
-          });
-        },
-      ),
-    ],
-  );
-}
+        const SizedBox(height: 8),
+
+        DropdownButtonFormField<int>(
+          value: _tenure,
+
+          decoration: InputDecoration(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+
+          items: const [
+            DropdownMenuItem(value: 6, child: Text('6 Months')),
+            DropdownMenuItem(value: 12, child: Text('12 Months')),
+            DropdownMenuItem(value: 18, child: Text('18 Months')),
+            DropdownMenuItem(value: 24, child: Text('24 Months')),
+            DropdownMenuItem(value: 36, child: Text('36 Months')),
+          ],
+
+          onChanged: (value) {
+            if (value == null) return;
+
+            setState(() {
+              _tenure = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
 }

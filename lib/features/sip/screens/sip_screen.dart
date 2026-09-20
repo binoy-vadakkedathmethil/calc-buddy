@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../services/history_service.dart';
 import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/sip_calculator.dart';
 
@@ -16,13 +17,26 @@ class _SipScreenState extends State<SipScreen> {
     _calculate();
   }
 
-  void _calculate() => setState(
-    () => value = SipCalculator.futureValue(
-      monthlyInvestment: monthly,
-      annualReturn: rate,
-      years: years.round(),
-    ),
-  );
+  void _calculate({bool save = false}) {
+    setState(() {
+      value = SipCalculator.futureValue(
+        monthlyInvestment: monthly,
+        annualReturn: rate,
+        years: years.round(),
+      );
+    });
+    if (save) {
+      HistoryService.add(
+        title: 'SIP Calculator',
+        details:
+            '${money(monthly)} | ${years.round()} yrs | ${rate.toStringAsFixed(1)}%',
+        result: money(value),
+        icon: 'savings',
+        color: 0xFF19A86B,
+      );
+    }
+  }
+
   String money(double v) => '₹${v.round()}';
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -179,7 +193,7 @@ class _SipScreenState extends State<SipScreen> {
   Widget button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: _calculate,
+      onPressed: () => _calculate(save: true),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF19A86B),
         foregroundColor: Colors.white,

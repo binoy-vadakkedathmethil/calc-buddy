@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../services/history_service.dart';
 import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/fd_calculator.dart';
 
@@ -16,13 +17,26 @@ class _FdScreenState extends State<FdScreen> {
     _calculate();
   }
 
-  void _calculate() => setState(
-    () => maturity = FdCalculator.maturityAmount(
-      principal: principal,
-      annualRate: rate,
-      years: years.round(),
-    ),
-  );
+  void _calculate({bool save = false}) {
+    setState(() {
+      maturity = FdCalculator.maturityAmount(
+        principal: principal,
+        annualRate: rate,
+        years: years.round(),
+      );
+    });
+    if (save) {
+      HistoryService.add(
+        title: 'FD Calculator',
+        details:
+            '${money(principal)} | ${years.round()} yrs | ${rate.toStringAsFixed(1)}%',
+        result: money(maturity),
+        icon: 'savings',
+        color: 0xFF0EA5A4,
+      );
+    }
+  }
+
   String money(double v) => '₹${v.round()}';
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -179,7 +193,7 @@ class _FdScreenState extends State<FdScreen> {
   Widget button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: _calculate,
+      onPressed: () => _calculate(save: true),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF0EA5A4),
         foregroundColor: Colors.white,

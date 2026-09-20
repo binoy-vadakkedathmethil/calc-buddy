@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../services/history_service.dart';
 import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/interest_calculator.dart';
 
@@ -18,7 +19,7 @@ class _InterestScreenState extends State<InterestScreen> {
     _calculate();
   }
 
-  void _calculate() {
+  void _calculate({bool save = false}) {
     final result = isCompound
         ? InterestCalculator.compoundInterest(
             principal: principal,
@@ -32,6 +33,16 @@ class _InterestScreenState extends State<InterestScreen> {
             years: years.round(),
           );
     setState(() => interest = result);
+    if (save) {
+      HistoryService.add(
+        title: 'Interest Calculator',
+        details:
+            '${_money(principal)} | ${years.round()} yrs | ${rate.toStringAsFixed(1)}%',
+        result: _money(principal + interest),
+        icon: 'percent',
+        color: 0xFFFD746C,
+      );
+    }
   }
 
   String _money(double value) => '₹${value.round()}';
@@ -92,7 +103,7 @@ class _InterestScreenState extends State<InterestScreen> {
         SizedBox(
           height: 52,
           child: ElevatedButton(
-            onPressed: _calculate,
+            onPressed: () => _calculate(save: true),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFD746C),
               foregroundColor: Colors.white,

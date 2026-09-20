@@ -4,6 +4,12 @@ import '../../shared/widgets/common/app_header.dart';
 import '../../shared/widgets/common/app_bottom_navigation.dart';
 import './data/calculator_categories.dart';
 import '../../shared/widgets/categories/category_card.dart';
+import 'package:calc_buddy/features/bmi_calculator/screens/bmi_calculator_screen.dart';
+import 'package:calc_buddy/features/gold_loan/screens/gold_loan_calculator_screen.dart';
+import 'package:calc_buddy/features/home_loan/screens/home_loan_screen.dart';
+import 'package:calc_buddy/features/car_loan/screens/car_loan_screen.dart';
+import 'package:calc_buddy/features/sip/screens/sip_screen.dart';
+import 'package:calc_buddy/features/interest/screens/interest_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -14,6 +20,22 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   int selectedIndex = 1;
+
+  void _openCategory(String title) {
+    final Widget? screen = switch (title) {
+      'Health & Fitness' => const BmiCalculatorScreen(),
+      'Loans & Finance' => const GoldLoanCalculatorScreen(),
+      'Vehicle' => const CarLoanScreen(),
+      'Home & Property' => const HomeLoanScreen(),
+      'Savings & Investment' => const SipScreen(),
+      'Miscellaneous' => const InterestScreen(),
+      _ => null,
+    };
+
+    if (screen != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +84,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
                   return CategoryCard(
                     category: category,
-                    onTap: () {
-                      debugPrint('Selected: ${category.title}');
-                    },
+                    onTap: () => _openCategory(category.title),
                   );
                 },
               ),

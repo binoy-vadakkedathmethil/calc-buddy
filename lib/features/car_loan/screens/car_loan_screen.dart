@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../../../services/history_service.dart';
 import '../widgets/car_loan_calculator.dart';
 import '../widgets/car_loan_chart.dart';
 import '../widgets/car_loan_input_card.dart';
 import '../widgets/car_loan_result_card.dart';
 
 class CarLoanScreen extends StatefulWidget {
-  const CarLoanScreen({
-    super.key,
-  });
+  const CarLoanScreen({super.key});
 
   @override
-  State<CarLoanScreen> createState() =>
-      _CarLoanScreenState();
+  State<CarLoanScreen> createState() => _CarLoanScreenState();
 }
 
-class _CarLoanScreenState
-    extends State<CarLoanScreen> {
-
+class _CarLoanScreenState extends State<CarLoanScreen> {
   // ------------------------------------------------
   // INPUT VALUES
   // ------------------------------------------------
@@ -53,54 +49,48 @@ class _CarLoanScreenState
   // CALCULATE
   // ------------------------------------------------
 
-  void _calculateLoan() {
-
-    final calculatedLoanAmount =
-        CarLoanCalculator
-            .calculateLoanAmount(
+  void _calculateLoan({bool save = false}) {
+    final calculatedLoanAmount = CarLoanCalculator.calculateLoanAmount(
       carPrice: carPrice,
       downPayment: downPayment,
     );
 
-    final calculatedEmi =
-        CarLoanCalculator.calculateEmi(
-      principal:
-          calculatedLoanAmount,
-      annualInterestRate:
-          interestRate,
-      tenureYears:
-          tenureYears.round(),
+    final calculatedEmi = CarLoanCalculator.calculateEmi(
+      principal: calculatedLoanAmount,
+      annualInterestRate: interestRate,
+      tenureYears: tenureYears.round(),
     );
 
-    final calculatedTotalPayment =
-        CarLoanCalculator
-            .calculateTotalPayment(
+    final calculatedTotalPayment = CarLoanCalculator.calculateTotalPayment(
       emi: calculatedEmi,
-      tenureYears:
-          tenureYears.round(),
+      tenureYears: tenureYears.round(),
     );
 
-    final calculatedInterest =
-        CarLoanCalculator
-            .calculateTotalInterest(
-      totalPayment:
-          calculatedTotalPayment,
-      principal:
-          calculatedLoanAmount,
+    final calculatedInterest = CarLoanCalculator.calculateTotalInterest(
+      totalPayment: calculatedTotalPayment,
+      principal: calculatedLoanAmount,
     );
 
     setState(() {
-      loanAmount =
-          calculatedLoanAmount;
+      loanAmount = calculatedLoanAmount;
 
       emi = calculatedEmi;
 
-      totalPayment =
-          calculatedTotalPayment;
+      totalPayment = calculatedTotalPayment;
 
-      totalInterest =
-          calculatedInterest;
+      totalInterest = calculatedInterest;
     });
+
+    if (save) {
+      HistoryService.add(
+        title: 'Car Loan Calculator',
+        details:
+            '${_formatCurrency(carPrice)} | ${tenureYears.round()} yrs | ${interestRate.toStringAsFixed(1)}%',
+        result: _formatCurrency(calculatedEmi),
+        icon: 'directions_car',
+        color: 0xFF2196F3,
+      );
+    }
   }
 
   // ------------------------------------------------
@@ -117,29 +107,19 @@ class _CarLoanScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor:
-          const Color(0xFFF8F9FC),
+      backgroundColor: const Color(0xFFF8F9FC),
 
       body: SafeArea(
         child: Column(
           children: [
-
             _buildHeader(),
 
             Expanded(
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.fromLTRB(
-                  16,
-                  8,
-                  16,
-                  100,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                 child: Column(
                   children: [
-
                     _buildIntro(),
 
                     const SizedBox(height: 18),
@@ -147,31 +127,20 @@ class _CarLoanScreenState
                     // --------------------------------
                     // CAR PRICE
                     // --------------------------------
-
                     CarLoanInputCard(
                       title: 'Car Price',
 
-                      value:
-                          _formatCurrency(
-                        carPrice,
-                      ),
+                      value: _formatCurrency(carPrice),
 
-                      minLabel:
-                          '₹2 Lakh',
+                      minLabel: '₹2 Lakh',
 
-                      maxLabel:
-                          '₹50 Lakh',
+                      maxLabel: '₹50 Lakh',
 
-                      icon:
-                          Icons.directions_car_rounded,
+                      icon: Icons.directions_car_rounded,
 
-                      iconColor:
-                          const Color(
-                        0xFF2196F3,
-                      ),
+                      iconColor: const Color(0xFF2196F3),
 
-                      sliderValue:
-                          carPrice,
+                      sliderValue: carPrice,
 
                       min: 200000,
 
@@ -185,10 +154,8 @@ class _CarLoanScreenState
 
                           // Down payment
                           // cannot exceed car price
-                          if (downPayment >
-                              carPrice) {
-                            downPayment =
-                                carPrice;
+                          if (downPayment > carPrice) {
+                            downPayment = carPrice;
                           }
                         });
                       },
@@ -199,47 +166,30 @@ class _CarLoanScreenState
                     // --------------------------------
                     // DOWN PAYMENT
                     // --------------------------------
-
                     CarLoanInputCard(
                       title: 'Down Payment',
 
-                      value:
-                          _formatCurrency(
-                        downPayment,
-                      ),
+                      value: _formatCurrency(downPayment),
 
-                      minLabel:
-                          '₹0',
+                      minLabel: '₹0',
 
-                      maxLabel:
-                          _formatCurrency(
-                        carPrice,
-                      ),
+                      maxLabel: _formatCurrency(carPrice),
 
-                      icon:
-                          Icons.payments_rounded,
+                      icon: Icons.payments_rounded,
 
-                      iconColor:
-                          const Color(
-                        0xFF19A86B,
-                      ),
+                      iconColor: const Color(0xFF19A86B),
 
-                      sliderValue:
-                          downPayment,
+                      sliderValue: downPayment,
 
                       min: 0,
 
                       max: carPrice,
 
-                      divisions:
-                          carPrice > 0
-                              ? 100
-                              : 1,
+                      divisions: carPrice > 0 ? 100 : 1,
 
                       onChanged: (value) {
                         setState(() {
-                          downPayment =
-                              value;
+                          downPayment = value;
                         });
                       },
                     ),
@@ -249,30 +199,20 @@ class _CarLoanScreenState
                     // --------------------------------
                     // INTEREST RATE
                     // --------------------------------
-
                     CarLoanInputCard(
-                      title:
-                          'Interest Rate',
+                      title: 'Interest Rate',
 
-                      value:
-                          '${interestRate.toStringAsFixed(1)}%',
+                      value: '${interestRate.toStringAsFixed(1)}%',
 
-                      minLabel:
-                          '5%',
+                      minLabel: '5%',
 
-                      maxLabel:
-                          '20%',
+                      maxLabel: '20%',
 
-                      icon:
-                          Icons.percent_rounded,
+                      icon: Icons.percent_rounded,
 
-                      iconColor:
-                          const Color(
-                        0xFF8B5CF6,
-                      ),
+                      iconColor: const Color(0xFF8B5CF6),
 
-                      sliderValue:
-                          interestRate,
+                      sliderValue: interestRate,
 
                       min: 5,
 
@@ -282,8 +222,7 @@ class _CarLoanScreenState
 
                       onChanged: (value) {
                         setState(() {
-                          interestRate =
-                              value;
+                          interestRate = value;
                         });
                       },
                     ),
@@ -293,30 +232,20 @@ class _CarLoanScreenState
                     // --------------------------------
                     // TENURE
                     // --------------------------------
-
                     CarLoanInputCard(
-                      title:
-                          'Loan Tenure',
+                      title: 'Loan Tenure',
 
-                      value:
-                          '${tenureYears.round()} Years',
+                      value: '${tenureYears.round()} Years',
 
-                      minLabel:
-                          '1 Year',
+                      minLabel: '1 Year',
 
-                      maxLabel:
-                          '7 Years',
+                      maxLabel: '7 Years',
 
-                      icon:
-                          Icons.calendar_month_rounded,
+                      icon: Icons.calendar_month_rounded,
 
-                      iconColor:
-                          const Color(
-                        0xFFFF9A3D,
-                      ),
+                      iconColor: const Color(0xFFFF9A3D),
 
-                      sliderValue:
-                          tenureYears,
+                      sliderValue: tenureYears,
 
                       min: 1,
 
@@ -326,8 +255,7 @@ class _CarLoanScreenState
 
                       onChanged: (value) {
                         setState(() {
-                          tenureYears =
-                              value;
+                          tenureYears = value;
                         });
                       },
                     ),
@@ -337,7 +265,6 @@ class _CarLoanScreenState
                     // --------------------------------
                     // CALCULATE BUTTON
                     // --------------------------------
-
                     _buildCalculateButton(),
 
                     const SizedBox(height: 20),
@@ -345,27 +272,14 @@ class _CarLoanScreenState
                     // --------------------------------
                     // RESULT
                     // --------------------------------
-
                     CarLoanResultCard(
-                      emi:
-                          _formatCurrency(
-                        emi,
-                      ),
+                      emi: _formatCurrency(emi),
 
-                      loanAmount:
-                          _formatCurrency(
-                        loanAmount,
-                      ),
+                      loanAmount: _formatCurrency(loanAmount),
 
-                      totalInterest:
-                          _formatCurrency(
-                        totalInterest,
-                      ),
+                      totalInterest: _formatCurrency(totalInterest),
 
-                      totalPayment:
-                          _formatCurrency(
-                        totalPayment,
-                      ),
+                      totalPayment: _formatCurrency(totalPayment),
                     ),
 
                     const SizedBox(height: 16),
@@ -373,13 +287,10 @@ class _CarLoanScreenState
                     // --------------------------------
                     // CHART
                     // --------------------------------
-
                     CarLoanChart(
-                      principal:
-                          loanAmount,
+                      principal: loanAmount,
 
-                      interest:
-                          totalInterest,
+                      interest: totalInterest,
                     ),
                   ],
                 ),
@@ -389,8 +300,7 @@ class _CarLoanScreenState
         ),
       ),
 
-      bottomNavigationBar:
-          _buildBottomNavigation(),
+      bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
@@ -399,21 +309,17 @@ class _CarLoanScreenState
   // ------------------------------------------------
 
   Widget _buildHeader() {
-
     return SizedBox(
       height: 62,
 
       child: Row(
         children: [
-
           IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
 
-            icon: const Icon(
-              Icons.arrow_back,
-            ),
+            icon: const Icon(Icons.arrow_back),
           ),
 
           const Text(
@@ -421,10 +327,8 @@ class _CarLoanScreenState
 
             style: TextStyle(
               fontSize: 20,
-              fontWeight:
-                  FontWeight.w700,
-              color:
-                  Color(0xFF17345C),
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF17345C),
             ),
           ),
         ],
@@ -437,26 +341,21 @@ class _CarLoanScreenState
   // ------------------------------------------------
 
   Widget _buildIntro() {
-
     return Row(
       children: [
-
         Container(
           width: 52,
           height: 52,
 
           decoration: BoxDecoration(
-            color:
-                const Color(0xFFEAF4FF),
-            borderRadius:
-                BorderRadius.circular(16),
+            color: const Color(0xFFEAF4FF),
+            borderRadius: BorderRadius.circular(16),
           ),
 
           child: const Icon(
             Icons.directions_car_rounded,
 
-            color:
-                Color(0xFF2196F3),
+            color: Color(0xFF2196F3),
 
             size: 28,
           ),
@@ -466,19 +365,15 @@ class _CarLoanScreenState
 
         const Expanded(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Text(
                 'Car Loan EMI',
 
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight:
-                      FontWeight.w700,
-                  color:
-                      Color(0xFF17345C),
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF17345C),
                 ),
               ),
 
@@ -487,11 +382,7 @@ class _CarLoanScreenState
               Text(
                 'Calculate your monthly car loan payment',
 
-                style: TextStyle(
-                  fontSize: 13,
-                  color:
-                      Colors.grey,
-                ),
+                style: TextStyle(fontSize: 13, color: Colors.grey),
               ),
             ],
           ),
@@ -505,45 +396,33 @@ class _CarLoanScreenState
   // ------------------------------------------------
 
   Widget _buildCalculateButton() {
-
     return SizedBox(
       width: double.infinity,
       height: 54,
 
       child: ElevatedButton(
         onPressed: () {
+          FocusScope.of(context).unfocus();
 
-          FocusScope.of(context)
-              .unfocus();
-
-          _calculateLoan();
+          _calculateLoan(save: true);
         },
 
-        style:
-            ElevatedButton.styleFrom(
-          backgroundColor:
-              const Color(0xFFFD746C),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFFD746C),
 
-          foregroundColor:
-              Colors.white,
+          foregroundColor: Colors.white,
 
           elevation: 0,
 
-          shape:
-              RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
 
         child: const Text(
           'Calculate EMI',
 
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight:
-                FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
     );
@@ -554,7 +433,6 @@ class _CarLoanScreenState
   // ------------------------------------------------
 
   Widget _buildBottomNavigation() {
-
     return Container(
       height: 70,
 
@@ -563,15 +441,11 @@ class _CarLoanScreenState
 
         boxShadow: [
           BoxShadow(
-            color:
-                Colors.black.withOpacity(
-              0.08,
-            ),
+            color: Colors.black.withOpacity(0.08),
 
             blurRadius: 12,
 
-            offset:
-                const Offset(0, -3),
+            offset: const Offset(0, -3),
           ),
         ],
       ),
@@ -579,9 +453,7 @@ class _CarLoanScreenState
       child: const Center(
         child: Text(
           'AppBottomNavigation',
-          style: TextStyle(
-            color: Colors.grey,
-          ),
+          style: TextStyle(color: Colors.grey),
         ),
       ),
     );

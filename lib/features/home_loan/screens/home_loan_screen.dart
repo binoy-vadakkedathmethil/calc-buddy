@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../../../services/history_service.dart';
 import '../widgets/home_loan_calculator.dart';
 import '../widgets/home_loan_chart.dart';
 import '../widgets/home_loan_input_card.dart';
 import '../widgets/home_loan_result_card.dart';
 
 class HomeLoanScreen extends StatefulWidget {
-  const HomeLoanScreen({
-    super.key,
-  });
+  const HomeLoanScreen({super.key});
 
   @override
-  State<HomeLoanScreen> createState() =>
-      _HomeLoanScreenState();
+  State<HomeLoanScreen> createState() => _HomeLoanScreenState();
 }
 
-class _HomeLoanScreenState
-    extends State<HomeLoanScreen> {
-
+class _HomeLoanScreenState extends State<HomeLoanScreen> {
   // ------------------------------------------------
   // INPUT VALUES
   // ------------------------------------------------
@@ -49,38 +45,41 @@ class _HomeLoanScreenState
   // CALCULATE
   // ------------------------------------------------
 
-  void _calculateLoan() {
-
-    final calculatedEmi =
-        HomeLoanCalculator.calculateEmi(
+  void _calculateLoan({bool save = false}) {
+    final calculatedEmi = HomeLoanCalculator.calculateEmi(
       principal: loanAmount,
       annualInterestRate: interestRate,
       tenureYears: tenureYears.round(),
     );
 
-    final calculatedTotalPayment =
-        HomeLoanCalculator.calculateTotalPayment(
+    final calculatedTotalPayment = HomeLoanCalculator.calculateTotalPayment(
       emi: calculatedEmi,
       tenureYears: tenureYears.round(),
     );
 
-    final calculatedInterest =
-        HomeLoanCalculator.calculateTotalInterest(
-      totalPayment:
-          calculatedTotalPayment,
+    final calculatedInterest = HomeLoanCalculator.calculateTotalInterest(
+      totalPayment: calculatedTotalPayment,
       principal: loanAmount,
     );
 
     setState(() {
-
       emi = calculatedEmi;
 
-      totalPayment =
-          calculatedTotalPayment;
+      totalPayment = calculatedTotalPayment;
 
-      totalInterest =
-          calculatedInterest;
+      totalInterest = calculatedInterest;
     });
+
+    if (save) {
+      HistoryService.add(
+        title: 'Home Loan Calculator',
+        details:
+            '${_formatCurrency(loanAmount)} | ${tenureYears.round()} yrs | ${interestRate.toStringAsFixed(1)}%',
+        result: _formatCurrency(calculatedEmi),
+        icon: 'home',
+        color: 0xFF22B573,
+      );
+    }
   }
 
   // ------------------------------------------------
@@ -88,7 +87,6 @@ class _HomeLoanScreenState
   // ------------------------------------------------
 
   String _formatCurrency(double value) {
-
     return '₹${value.round()}';
   }
 
@@ -98,29 +96,19 @@ class _HomeLoanScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor:
-          const Color(0xFFF8F9FC),
+      backgroundColor: const Color(0xFFF8F9FC),
 
       body: SafeArea(
         child: Column(
           children: [
-
             _buildHeader(),
 
             Expanded(
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.fromLTRB(
-                  16,
-                  8,
-                  16,
-                  100,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                 child: Column(
                   children: [
-
                     _buildIntro(),
 
                     const SizedBox(height: 18),
@@ -129,25 +117,17 @@ class _HomeLoanScreenState
                     HomeLoanInputCard(
                       title: 'Loan Amount',
 
-                      value:
-                          _formatCurrency(
-                        loanAmount,
-                      ),
+                      value: _formatCurrency(loanAmount),
 
                       minLabel: '₹1 Lakh',
 
                       maxLabel: '₹2 Crore',
 
-                      icon:
-                          Icons.currency_rupee,
+                      icon: Icons.currency_rupee,
 
-                      iconColor:
-                          const Color(
-                        0xFF19A86B,
-                      ),
+                      iconColor: const Color(0xFF19A86B),
 
-                      sliderValue:
-                          loanAmount,
+                      sliderValue: loanAmount,
 
                       min: 100000,
 
@@ -156,11 +136,9 @@ class _HomeLoanScreenState
                       divisions: 199,
 
                       onChanged: (value) {
-
                         setState(() {
                           loanAmount = value;
                         });
-
                       },
                     ),
 
@@ -170,23 +148,17 @@ class _HomeLoanScreenState
                     HomeLoanInputCard(
                       title: 'Interest Rate',
 
-                      value:
-                          '${interestRate.toStringAsFixed(1)}%',
+                      value: '${interestRate.toStringAsFixed(1)}%',
 
                       minLabel: '5%',
 
                       maxLabel: '20%',
 
-                      icon:
-                          Icons.percent,
+                      icon: Icons.percent,
 
-                      iconColor:
-                          const Color(
-                        0xFF8B5CF6,
-                      ),
+                      iconColor: const Color(0xFF8B5CF6),
 
-                      sliderValue:
-                          interestRate,
+                      sliderValue: interestRate,
 
                       min: 5,
 
@@ -195,11 +167,9 @@ class _HomeLoanScreenState
                       divisions: 150,
 
                       onChanged: (value) {
-
                         setState(() {
                           interestRate = value;
                         });
-
                       },
                     ),
 
@@ -209,23 +179,17 @@ class _HomeLoanScreenState
                     HomeLoanInputCard(
                       title: 'Loan Tenure',
 
-                      value:
-                          '${tenureYears.round()} Years',
+                      value: '${tenureYears.round()} Years',
 
                       minLabel: '1 Year',
 
                       maxLabel: '30 Years',
 
-                      icon:
-                          Icons.calendar_month,
+                      icon: Icons.calendar_month,
 
-                      iconColor:
-                          const Color(
-                        0xFF2196F3,
-                      ),
+                      iconColor: const Color(0xFF2196F3),
 
-                      sliderValue:
-                          tenureYears,
+                      sliderValue: tenureYears,
 
                       min: 1,
 
@@ -234,11 +198,9 @@ class _HomeLoanScreenState
                       divisions: 29,
 
                       onChanged: (value) {
-
                         setState(() {
                           tenureYears = value;
                         });
-
                       },
                     ),
 
@@ -251,34 +213,22 @@ class _HomeLoanScreenState
 
                     // Result
                     HomeLoanResultCard(
-                      emi:
-                          _formatCurrency(emi),
+                      emi: _formatCurrency(emi),
 
-                      loanAmount:
-                          _formatCurrency(
-                        loanAmount,
-                      ),
+                      loanAmount: _formatCurrency(loanAmount),
 
-                      totalInterest:
-                          _formatCurrency(
-                        totalInterest,
-                      ),
+                      totalInterest: _formatCurrency(totalInterest),
 
-                      totalPayment:
-                          _formatCurrency(
-                        totalPayment,
-                      ),
+                      totalPayment: _formatCurrency(totalPayment),
                     ),
 
                     const SizedBox(height: 16),
 
                     // Chart
                     HomeLoanChart(
-                      principal:
-                          loanAmount,
+                      principal: loanAmount,
 
-                      interest:
-                          totalInterest,
+                      interest: totalInterest,
                     ),
                   ],
                 ),
@@ -289,8 +239,7 @@ class _HomeLoanScreenState
       ),
 
       // Use your existing AppBottomNavigation here
-      bottomNavigationBar:
-          _buildBottomNavigation(),
+      bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
@@ -299,21 +248,17 @@ class _HomeLoanScreenState
   // ------------------------------------------------
 
   Widget _buildHeader() {
-
     return SizedBox(
       height: 62,
 
       child: Row(
         children: [
-
           IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
 
-            icon: const Icon(
-              Icons.arrow_back,
-            ),
+            icon: const Icon(Icons.arrow_back),
           ),
 
           const Text(
@@ -335,27 +280,22 @@ class _HomeLoanScreenState
   // ------------------------------------------------
 
   Widget _buildIntro() {
-
     return Row(
       children: [
-
         Container(
           width: 52,
           height: 52,
 
           decoration: BoxDecoration(
-            color:
-                const Color(0xFFE9F8F1),
+            color: const Color(0xFFE9F8F1),
 
-            borderRadius:
-                BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16),
           ),
 
           child: const Icon(
             Icons.home_rounded,
 
-            color:
-                Color(0xFF19A86B),
+            color: Color(0xFF19A86B),
 
             size: 28,
           ),
@@ -365,20 +305,16 @@ class _HomeLoanScreenState
 
         const Expanded(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-
               Text(
                 'Home Loan EMI',
 
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight:
-                      FontWeight.w700,
-                  color:
-                      Color(0xFF17345C),
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF17345C),
                 ),
               ),
 
@@ -387,10 +323,7 @@ class _HomeLoanScreenState
               Text(
                 'Calculate your monthly home loan payment',
 
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 13, color: Colors.grey),
               ),
             ],
           ),
@@ -404,45 +337,33 @@ class _HomeLoanScreenState
   // ------------------------------------------------
 
   Widget _buildCalculateButton() {
-
     return SizedBox(
       width: double.infinity,
       height: 54,
 
       child: ElevatedButton(
         onPressed: () {
+          FocusScope.of(context).unfocus();
 
-          FocusScope.of(context)
-              .unfocus();
-
-          _calculateLoan();
+          _calculateLoan(save: true);
         },
 
-        style:
-            ElevatedButton.styleFrom(
-          backgroundColor:
-              const Color(0xFFFD746C),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFFD746C),
 
-          foregroundColor:
-              Colors.white,
+          foregroundColor: Colors.white,
 
           elevation: 0,
 
-          shape:
-              RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
 
         child: const Text(
           'Calculate EMI',
 
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight:
-                FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
     );
@@ -453,7 +374,6 @@ class _HomeLoanScreenState
   // ------------------------------------------------
 
   Widget _buildBottomNavigation() {
-
     return Container(
       height: 70,
 
@@ -462,24 +382,16 @@ class _HomeLoanScreenState
 
         boxShadow: [
           BoxShadow(
-            color:
-                Colors.black.withOpacity(
-              0.08,
-            ),
+            color: Colors.black.withOpacity(0.08),
 
             blurRadius: 12,
 
-            offset:
-                const Offset(0, -3),
+            offset: const Offset(0, -3),
           ),
         ],
       ),
 
-      child: const Center(
-        child: Text(
-          'AppBottomNavigation',
-        ),
-      ),
+      child: const Center(child: Text('AppBottomNavigation')),
     );
   }
 }
