@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/calculator_item.dart';
+
 class PopularCalculators extends StatelessWidget {
   final List<CalculatorItem> calculators;
   final VoidCallback? onSeeAllTap;
@@ -21,14 +22,8 @@ class PopularCalculators extends StatelessWidget {
         // ------------------------------------------
         // SECTION HEADER
         // ------------------------------------------
-
         Padding(
-          padding: const EdgeInsets.fromLTRB(
-            14,
-            4,
-            14,
-            8,
-          ),
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 8),
           child: Row(
             children: [
               const Expanded(
@@ -76,18 +71,13 @@ class PopularCalculators extends StatelessWidget {
         // ------------------------------------------
         // CALCULATOR GRID
         // ------------------------------------------
-
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 4,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: GridView.builder(
             shrinkWrap: true,
-            physics:
-                const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: calculators.length,
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               crossAxisSpacing: 6,
               mainAxisSpacing: 6,
@@ -110,7 +100,6 @@ class PopularCalculators extends StatelessWidget {
   }
 }
 
-
 // ======================================================
 // POPULAR CALCULATOR CARD
 // ======================================================
@@ -119,10 +108,7 @@ class _PopularCalculatorCard extends StatelessWidget {
   final CalculatorItem calculator;
   final VoidCallback? onTap;
 
-  const _PopularCalculatorCard({
-    required this.calculator,
-    this.onTap,
-  });
+  const _PopularCalculatorCard({required this.calculator, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -132,26 +118,19 @@ class _PopularCalculatorCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 3,
-            vertical: 7,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 7),
           decoration: BoxDecoration(
-            color: _getCardColor(calculator.title),
+            color: _getCardColor(calculator.id),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Icon
               SizedBox(
                 width: 42,
                 height: 42,
-                child: SvgPicture.asset(
-                  calculator.icon,
-                  fit: BoxFit.contain,
-                ),
+                child: SvgPicture.asset(calculator.icon, fit: BoxFit.contain),
               ),
 
               const SizedBox(height: 4),
@@ -188,36 +167,34 @@ class _PopularCalculatorCard extends StatelessWidget {
     );
   }
 
-  Color _getCardColor(String title) {
-    switch (title) {
-      case 'BMI':
+  Color _getCardColor(String id) {
+    switch (id) {
+      case 'bmi':
         return const Color(0xFFFFEDEF);
 
-      case 'Gold Loan':
+      case 'gold_loan':
         return const Color(0xFFFFF5D9);
 
-      case 'Home Loan':
+      case 'home_loan':
         return const Color(0xFFE6F8EF);
 
-      case 'Car Loan':
+      case 'car_loan':
         return const Color(0xFFEAF4FF);
 
-      case 'EMI':
+      case 'emi':
         return const Color(0xFFF0E9FF);
 
-      case 'SIP':
+      case 'sip':
         return const Color(0xFFFFECEB);
 
-      case 'FD':
+      case 'fd':
         return const Color(0xFFE4FAFA);
 
-      case 'Income Tax':
+      case 'income_tax':
         return const Color(0xFFFFF0E6);
 
       default:
         return const Color(0xFFF0F2F6);
     }
   }
-  
-  
 }

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../../models/gold_rate.dart';
 import '../../../services/gold_rate_service.dart';
-import '../../../shared/widgets/gold_loan/gold_rate_card.dart';
-import '../../../shared/widgets/gold_loan/gold_loan_result_card.dart';
+import '../widgets/gold_rate_card.dart';
+import '../widgets/gold_loan_result_card.dart';
 
 class GoldLoanCalculatorScreen extends StatefulWidget {
   const GoldLoanCalculatorScreen({
@@ -250,6 +250,13 @@ class _GoldLoanCalculatorScreenState
 
               child: ElevatedButton(
                 onPressed: _calculateLoan,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFD746C),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
 
                 child: const Text(
                   'Calculate Loan',
