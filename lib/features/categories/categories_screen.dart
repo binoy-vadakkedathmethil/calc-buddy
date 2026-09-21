@@ -4,6 +4,7 @@ import '../../shared/widgets/common/app_header.dart';
 import '../../shared/widgets/common/app_bottom_navigation.dart';
 import './data/calculator_categories.dart';
 import '../../shared/widgets/categories/category_card.dart';
+import 'package:calc_buddy/ads/banner_ad_widget.dart';
 import 'package:calc_buddy/features/bmi_calculator/screens/bmi_calculator_screen.dart';
 import 'package:calc_buddy/features/gold_loan/screens/gold_loan_calculator_screen.dart';
 import 'package:calc_buddy/features/home_loan/screens/home_loan_screen.dart';
@@ -73,6 +74,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
               ),
             ),
+
+            const SizedBox(height: 4),
+            const BannerAdWidget(),
+            const SizedBox(height: 12),
 
             // Category list
             Expanded(

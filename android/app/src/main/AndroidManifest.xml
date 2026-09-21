@@ -3,6 +3,11 @@
         android:label="CalcBuddy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+          <!-- Add AdMob App ID here -->
+                <meta-data
+                    android:name="com.google.android.gms.ads.APPLICATION_ID"
+                    android:value="ca-app-pub-3708397935213383~4245696835"
+                />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -20,6 +25,8 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

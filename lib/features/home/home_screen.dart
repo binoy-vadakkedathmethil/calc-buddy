@@ -4,7 +4,6 @@ import '../../shared/widgets/common/app_header.dart';
 import '../../shared/widgets/home/home_hero_banner.dart';
 import '../../shared/widgets/home/calculator_search.dart';
 import '../../shared/widgets/home/popular_calculators.dart';
-import '../../shared/widgets/home/plan_better_card.dart';
 import '../../shared/widgets/common/app_bottom_navigation.dart';
 
 import '../../models/calculator_item.dart';
@@ -16,6 +15,7 @@ import 'package:calc_buddy/features/emi/screens/emi_screen.dart';
 import 'package:calc_buddy/features/sip/screens/sip_screen.dart';
 import 'package:calc_buddy/features/fd/screens/fd_screen.dart';
 import 'package:calc_buddy/features/interest/screens/interest_screen.dart';
+import 'package:calc_buddy/ads/banner_ad_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -78,6 +78,18 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   ];
   int selectedIndex = 0;
+  String searchQuery = '';
+
+  List<CalculatorItem> get filteredCalculators {
+    final query = searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return popularCalculators;
+
+    return popularCalculators.where((calculator) {
+      return calculator.title.toLowerCase().contains(query) ||
+          calculator.subtitle.toLowerCase().contains(query) ||
+          calculator.id.toLowerCase().contains(query);
+    }).toList();
+  }
 
   void _openCalculator(String id) {
     final Widget? screen = switch (id) {
@@ -118,11 +130,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 slivers: [
                   // Hero Banner
                   const SliverToBoxAdapter(child: HomeHeroBanner()),
-                  const SliverToBoxAdapter(child: CalculatorSearch()),
+                  SliverToBoxAdapter(
+                    child: CalculatorSearch(
+                      onChanged: (value) {
+                        setState(() => searchQuery = value);
+                      },
+                    ),
+                  ),
                   // Popular Calculators
                   SliverToBoxAdapter(
                     child: PopularCalculators(
-                      calculators: popularCalculators,
+                      calculators: filteredCalculators,
 
                       onSeeAllTap: () {
                         // Categories screen later
@@ -132,13 +150,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           _openCalculator(calculator.id),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: PlanBetterCard(
-                      onTap: () {
-                        debugPrint('Plan Better tapped');
-                      },
+                  if (filteredCalculators.isEmpty)
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Center(
+                          child: Text(
+                            'No calculators found',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+                  const SliverToBoxAdapter(child: BannerAdWidget()),
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
                 ],
               ),
             ),

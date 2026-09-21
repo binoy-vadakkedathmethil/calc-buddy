@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../services/history_service.dart';
 import '../../shared/widgets/common/app_bottom_navigation.dart';
 import '../../shared/widgets/common/app_header.dart';
+import 'package:calc_buddy/ads/banner_ad_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -58,6 +59,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           children: [
             const AppHeader(),
             _buildHistoryHeader(),
+            const SizedBox(height: 4),
+            const BannerAdWidget(),
+            const SizedBox(height: 12),
             Expanded(child: _buildHistoryList()),
           ],
         ),

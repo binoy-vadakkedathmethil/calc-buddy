@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../services/history_service.dart';
-
+import 'package:calc_buddy/ads/interstitial_ad_manager.dart';
 class BmiCalculatorScreen extends StatefulWidget {
   const BmiCalculatorScreen({super.key});
 
@@ -70,6 +70,7 @@ class _BmiCalculatorScreenState extends State<BmiCalculatorScreen> {
       icon: 'favorite',
       color: 0xFFFF6B6B,
     );
+    InterstitialAdManager.recordCalculation();
   }
 
   void clearBMI() {

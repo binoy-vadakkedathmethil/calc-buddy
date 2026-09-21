@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../models/gold_rate.dart';
+import '../../../ads/interstitial_ad_manager.dart';
 import '../../../services/gold_rate_service.dart';
 import '../../../services/history_service.dart';
 import '../widgets/gold_rate_card.dart';
@@ -177,6 +178,7 @@ class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
         icon: 'diamond',
         color: 0xFFF5A623,
       );
+      InterstitialAdManager.recordCalculation();
     }
   }
 

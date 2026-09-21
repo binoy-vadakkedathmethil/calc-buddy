@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../ads/interstitial_ad_manager.dart';
 import '../../../services/history_service.dart';
 import '../widgets/car_loan_calculator.dart';
 import '../widgets/car_loan_chart.dart';
@@ -90,6 +91,7 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
         icon: 'directions_car',
         color: 0xFF2196F3,
       );
+      InterstitialAdManager.recordCalculation();
     }
   }
 

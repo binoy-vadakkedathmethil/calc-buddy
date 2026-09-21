@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:calc_buddy/ads/interstitial_ad_manager.dart';
 import '../../../services/history_service.dart';
 import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/emi_calculator.dart';
@@ -35,6 +36,7 @@ class _EmiScreenState extends State<EmiScreen> {
         icon: 'percent',
         color: 0xFF8B5CF6,
       );
+      InterstitialAdManager.recordCalculation();
     }
   }
 

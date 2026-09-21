@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../ads/interstitial_ad_manager.dart';
 import '../../../services/history_service.dart';
 import '../widgets/home_loan_calculator.dart';
 import '../widgets/home_loan_chart.dart';
@@ -79,6 +80,7 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
         icon: 'home',
         color: 0xFF22B573,
       );
+      InterstitialAdManager.recordCalculation();
     }
   }
 
