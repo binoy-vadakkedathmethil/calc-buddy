@@ -302,7 +302,6 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
         ),
       ),
 
-      bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
@@ -430,34 +429,5 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
     );
   }
 
-  // ------------------------------------------------
-  // BOTTOM NAVIGATION
-  // ------------------------------------------------
-
-  Widget _buildBottomNavigation() {
-    return Container(
-      height: 70,
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-
-            blurRadius: 12,
-
-            offset: const Offset(0, -3),
-          ),
-        ],
-      ),
-
-      child: const Center(
-        child: Text(
-          'AppBottomNavigation',
-          style: TextStyle(color: Colors.grey),
-        ),
-      ),
-    );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calc_buddy/ads/interstitial_ad_manager.dart';
 import '../../../services/history_service.dart';
-import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/fd_calculator.dart';
 
 class FdScreen extends StatefulWidget {
@@ -95,7 +94,6 @@ class _FdScreenState extends State<FdScreen> {
         result(),
       ],
     ),
-    bottomNavigationBar: const AppBottomNavigation(selectedIndex: 0),
   );
   Widget header() => Row(
     children: [

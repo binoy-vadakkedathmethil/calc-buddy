@@ -240,8 +240,6 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
         ),
       ),
 
-      // Use your existing AppBottomNavigation here
-      bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
@@ -371,29 +369,4 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
     );
   }
 
-  // ------------------------------------------------
-  // BOTTOM NAVIGATION
-  // ------------------------------------------------
-
-  Widget _buildBottomNavigation() {
-    return Container(
-      height: 70,
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-
-            blurRadius: 12,
-
-            offset: const Offset(0, -3),
-          ),
-        ],
-      ),
-
-      child: const Center(child: Text('AppBottomNavigation')),
-    );
-  }
 }

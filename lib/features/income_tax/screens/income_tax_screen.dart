@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/income_tax_calculator.dart';
 
 class IncomeTaxScreen extends StatefulWidget {
@@ -40,7 +39,6 @@ class _IncomeTaxScreenState extends State<IncomeTaxScreen> {
         result(),
       ],
     ),
-    bottomNavigationBar: const AppBottomNavigation(selectedIndex: 0),
   );
   Widget header() => Row(
     children: [

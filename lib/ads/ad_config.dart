@@ -1,12 +1,17 @@
+import 'ad_config_production.dart';
+import 'ad_config_test.dart';
+
 class AdConfig {
-  AdConfig._();
+  static const bool isProduction =
+      bool.fromEnvironment('PRODUCTION_ADS', defaultValue: false);
 
-  // Google test banner ID
-  // Keep this while developing/testing.
-  static const String bannerAdUnitId =
-      'ca-app-pub-3940256099942544/6300978111';
-    static const String interstitialAdUnitId =
-      'ca-app-pub-3940256099942544/1033173712';
+  static String get bannerAdUnitId =>
+      isProduction
+          ? AdConfigProduction.bannerAdUnitId
+          : AdConfigTest.bannerAdUnitId;
 
-  // We'll add the production interstitial ID later.
+  static String get interstitialAdUnitId =>
+      isProduction
+          ? AdConfigProduction.interstitialAdUnitId
+          : AdConfigTest.interstitialAdUnitId;
 }

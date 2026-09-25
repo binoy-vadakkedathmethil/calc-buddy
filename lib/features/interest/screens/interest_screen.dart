@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calc_buddy/ads/interstitial_ad_manager.dart';
 import '../../../services/history_service.dart';
-import '../../../shared/widgets/common/app_bottom_navigation.dart';
 import '../widgets/interest_calculator.dart';
 
 class InterestScreen extends StatefulWidget {
@@ -123,7 +122,6 @@ class _InterestScreenState extends State<InterestScreen> {
         _result(),
       ],
     ),
-    bottomNavigationBar: const AppBottomNavigation(selectedIndex: 0),
   );
 
   Widget _header() => Row(
