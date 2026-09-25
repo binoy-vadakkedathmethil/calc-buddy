@@ -10,6 +10,8 @@ class InterestScreen extends StatefulWidget {
 }
 
 class _InterestScreenState extends State<InterestScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   double principal = 100000, rate = 8, years = 5, interest = 0;
   bool isCompound = true;
 
@@ -19,7 +21,7 @@ class _InterestScreenState extends State<InterestScreen> {
     _calculate();
   }
 
-  void _calculate({bool save = false}) {
+  void _calculate({bool save = false, bool scrollToResult = false}) {
     final result = isCompound
         ? InterestCalculator.compoundInterest(
             principal: principal,
@@ -33,6 +35,18 @@ class _InterestScreenState extends State<InterestScreen> {
             years: years.round(),
           );
     setState(() => interest = result);
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
     if (save) {
       HistoryService.add(
         title: 'Interest Calculator',
@@ -104,7 +118,7 @@ class _InterestScreenState extends State<InterestScreen> {
         SizedBox(
           height: 52,
           child: ElevatedButton(
-            onPressed: () => _calculate(save: true),
+            onPressed: () => _calculate(save: true, scrollToResult: true),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFD746C),
               foregroundColor: Colors.white,
@@ -244,6 +258,7 @@ class _InterestScreenState extends State<InterestScreen> {
   );
 
   Widget _result() => Container(
+    key: _resultKey,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: const Color(0xFFFFE7E4),

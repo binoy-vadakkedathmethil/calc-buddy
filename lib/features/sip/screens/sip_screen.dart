@@ -10,6 +10,8 @@ class SipScreen extends StatefulWidget {
 }
 
 class _SipScreenState extends State<SipScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   double monthly = 10000, rate = 12, years = 10, value = 0;
   @override
   void initState() {
@@ -17,7 +19,7 @@ class _SipScreenState extends State<SipScreen> {
     _calculate();
   }
 
-  void _calculate({bool save = false}) {
+  void _calculate({bool save = false, bool scrollToResult = false}) {
     setState(() {
       value = SipCalculator.futureValue(
         monthlyInvestment: monthly,
@@ -25,6 +27,18 @@ class _SipScreenState extends State<SipScreen> {
         years: years.round(),
       );
     });
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
     if (save) {
       HistoryService.add(
         title: 'SIP Calculator',
@@ -193,7 +207,7 @@ class _SipScreenState extends State<SipScreen> {
   Widget button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: () => _calculate(save: true),
+      onPressed: () => _calculate(save: true, scrollToResult: true),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF19A86B),
         foregroundColor: Colors.white,
@@ -208,6 +222,7 @@ class _SipScreenState extends State<SipScreen> {
   Widget result() {
     final invested = SipCalculator.investedAmount(monthly, years.round());
     return Container(
+      key: _resultKey,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFE6F8EF),

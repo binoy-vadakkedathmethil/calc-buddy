@@ -10,6 +10,8 @@ class BmiCalculatorScreen extends StatefulWidget {
 }
 
 class _BmiCalculatorScreenState extends State<BmiCalculatorScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
 
@@ -60,6 +62,16 @@ class _BmiCalculatorScreenState extends State<BmiCalculatorScreen> {
     setState(() {
       bmi = calculatedBMI;
       bmiCategory = category;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Scrollable.ensureVisible(
+        _resultKey.currentContext!,
+        duration: const Duration(milliseconds: 650),
+        curve: Curves.easeInOutCubic,
+        alignment: 0.08,
+      );
     });
 
     HistoryService.add(
@@ -293,6 +305,7 @@ class _BmiCalculatorScreenState extends State<BmiCalculatorScreen> {
 
   Widget _buildResult() {
     return Container(
+      key: _resultKey,
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(

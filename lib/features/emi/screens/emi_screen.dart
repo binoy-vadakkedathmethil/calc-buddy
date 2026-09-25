@@ -10,6 +10,8 @@ class EmiScreen extends StatefulWidget {
 }
 
 class _EmiScreenState extends State<EmiScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   double principal = 1000000, rate = 9, years = 5, emi = 0;
 
   @override
@@ -18,7 +20,7 @@ class _EmiScreenState extends State<EmiScreen> {
     _calculate();
   }
 
-  void _calculate({bool save = false}) {
+  void _calculate({bool save = false, bool scrollToResult = false}) {
     setState(() {
       emi = EmiCalculator.calculateEmi(
         principal: principal,
@@ -26,6 +28,18 @@ class _EmiScreenState extends State<EmiScreen> {
         tenureYears: years.round(),
       );
     });
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
     if (save) {
       HistoryService.add(
         title: 'EMI Calculator',
@@ -207,7 +221,7 @@ class _EmiScreenState extends State<EmiScreen> {
   Widget _button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: () => _calculate(save: true),
+      onPressed: () => _calculate(save: true, scrollToResult: true),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFFD746C),
         foregroundColor: Colors.white,
@@ -221,6 +235,7 @@ class _EmiScreenState extends State<EmiScreen> {
   );
   Widget _result(String label, String value, String first, String second) =>
       Container(
+        key: _resultKey,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: const Color(0xFFFFE7E4),

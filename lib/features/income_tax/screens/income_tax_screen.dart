@@ -8,6 +8,8 @@ class IncomeTaxScreen extends StatefulWidget {
 }
 
 class _IncomeTaxScreenState extends State<IncomeTaxScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   double income = 1200000, tax = 0;
   @override
   void initState() {
@@ -15,8 +17,21 @@ class _IncomeTaxScreenState extends State<IncomeTaxScreen> {
     _calculate();
   }
 
-  void _calculate() =>
-      setState(() => tax = IncomeTaxCalculator.calculateTax(income));
+  void _calculate({bool scrollToResult = false}) {
+    setState(() => tax = IncomeTaxCalculator.calculateTax(income));
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
+  }
   String money(double v) => '₹${v.round()}';
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -124,7 +139,7 @@ class _IncomeTaxScreenState extends State<IncomeTaxScreen> {
   Widget button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: _calculate,
+      onPressed: () => _calculate(scrollToResult: true),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFFF9A3D),
         foregroundColor: Colors.white,
@@ -137,6 +152,7 @@ class _IncomeTaxScreenState extends State<IncomeTaxScreen> {
     ),
   );
   Widget result() => Container(
+    key: _resultKey,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: const Color(0xFFFFF0E6),

@@ -10,6 +10,8 @@ class FdScreen extends StatefulWidget {
 }
 
 class _FdScreenState extends State<FdScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   double principal = 100000, rate = 7.5, years = 5, maturity = 0;
   @override
   void initState() {
@@ -17,7 +19,7 @@ class _FdScreenState extends State<FdScreen> {
     _calculate();
   }
 
-  void _calculate({bool save = false}) {
+  void _calculate({bool save = false, bool scrollToResult = false}) {
     setState(() {
       maturity = FdCalculator.maturityAmount(
         principal: principal,
@@ -25,6 +27,18 @@ class _FdScreenState extends State<FdScreen> {
         years: years.round(),
       );
     });
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
     if (save) {
       HistoryService.add(
         title: 'FD Calculator',
@@ -92,6 +106,7 @@ class _FdScreenState extends State<FdScreen> {
         button(),
         const SizedBox(height: 18),
         result(),
+        const SizedBox(height: 10),
       ],
     ),
   );
@@ -193,9 +208,9 @@ class _FdScreenState extends State<FdScreen> {
   Widget button() => SizedBox(
     height: 52,
     child: ElevatedButton(
-      onPressed: () => _calculate(save: true),
+      onPressed: () => _calculate(save: true, scrollToResult: true),
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF0EA5A4),
+        backgroundColor: const Color(0xFFFD746C),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
@@ -206,6 +221,7 @@ class _FdScreenState extends State<FdScreen> {
     ),
   );
   Widget result() => Container(
+    key: _resultKey,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: const Color(0xFFE4FAFA),

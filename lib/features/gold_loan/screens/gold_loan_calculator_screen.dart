@@ -18,6 +18,8 @@ class GoldLoanCalculatorScreen extends StatefulWidget {
 }
 
 class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   final _weightController = TextEditingController();
 
   final _interestController = TextEditingController(text: '10.5');
@@ -117,7 +119,7 @@ class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
   // CALCULATE
   // --------------------------------------------------
 
-  void _calculateLoan({bool save = false}) {
+  void _calculateLoan({bool save = false, bool scrollToResult = false}) {
     FocusScope.of(context).unfocus();
 
     final weight = double.tryParse(_weightController.text.trim()) ?? 0;
@@ -169,6 +171,18 @@ class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
       _emi = emi;
     });
 
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
+
     if (save) {
       HistoryService.add(
         title: 'Gold Loan Calculator',
@@ -219,7 +233,8 @@ class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
               height: 52,
 
               child: ElevatedButton(
-                onPressed: () => _calculateLoan(save: true),
+                onPressed: () =>
+                  _calculateLoan(save: true, scrollToResult: true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFD746C),
                   foregroundColor: Colors.white,
@@ -243,6 +258,7 @@ class _GoldLoanCalculatorScreenState extends State<GoldLoanCalculatorScreen> {
                 _interestAmount != null &&
                 _emi != null)
               LoanResultCard(
+                key: _resultKey,
                 goldValue: _goldValue!,
                 loanAmount: _loanAmount!,
                 interestAmount: _interestAmount!,

@@ -15,6 +15,8 @@ class HomeLoanScreen extends StatefulWidget {
 }
 
 class _HomeLoanScreenState extends State<HomeLoanScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   // ------------------------------------------------
   // INPUT VALUES
   // ------------------------------------------------
@@ -46,7 +48,7 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
   // CALCULATE
   // ------------------------------------------------
 
-  void _calculateLoan({bool save = false}) {
+  void _calculateLoan({bool save = false, bool scrollToResult = false}) {
     final calculatedEmi = HomeLoanCalculator.calculateEmi(
       principal: loanAmount,
       annualInterestRate: interestRate,
@@ -70,6 +72,18 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
 
       totalInterest = calculatedInterest;
     });
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
 
     if (save) {
       HistoryService.add(
@@ -215,6 +229,7 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
 
                     // Result
                     HomeLoanResultCard(
+                      key: _resultKey,
                       emi: _formatCurrency(emi),
 
                       loanAmount: _formatCurrency(loanAmount),
@@ -345,7 +360,7 @@ class _HomeLoanScreenState extends State<HomeLoanScreen> {
         onPressed: () {
           FocusScope.of(context).unfocus();
 
-          _calculateLoan(save: true);
+          _calculateLoan(save: true, scrollToResult: true);
         },
 
         style: ElevatedButton.styleFrom(
