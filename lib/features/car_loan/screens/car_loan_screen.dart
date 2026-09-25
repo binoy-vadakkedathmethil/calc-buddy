@@ -15,6 +15,8 @@ class CarLoanScreen extends StatefulWidget {
 }
 
 class _CarLoanScreenState extends State<CarLoanScreen> {
+  final GlobalKey _resultKey = GlobalKey();
+
   // ------------------------------------------------
   // INPUT VALUES
   // ------------------------------------------------
@@ -50,7 +52,7 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
   // CALCULATE
   // ------------------------------------------------
 
-  void _calculateLoan({bool save = false}) {
+  void _calculateLoan({bool save = false, bool scrollToResult = false}) {
     final calculatedLoanAmount = CarLoanCalculator.calculateLoanAmount(
       carPrice: carPrice,
       downPayment: downPayment,
@@ -81,6 +83,19 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
 
       totalInterest = calculatedInterest;
     });
+
+    if (scrollToResult) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        Scrollable.ensureVisible(
+          _resultKey.currentContext!,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeInOutCubic,
+          alignment: 0.08,
+        );
+      });
+    }
 
     if (save) {
       HistoryService.add(
@@ -275,6 +290,7 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
                     // RESULT
                     // --------------------------------
                     CarLoanResultCard(
+                      key: _resultKey,
                       emi: _formatCurrency(emi),
 
                       loanAmount: _formatCurrency(loanAmount),
@@ -405,7 +421,7 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
         onPressed: () {
           FocusScope.of(context).unfocus();
 
-          _calculateLoan(save: true);
+          _calculateLoan(save: true, scrollToResult: true);
         },
 
         style: ElevatedButton.styleFrom(
@@ -429,5 +445,5 @@ class _CarLoanScreenState extends State<CarLoanScreen> {
     );
   }
 
-  }
+  
 }
